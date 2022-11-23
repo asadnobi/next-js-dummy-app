@@ -1,0 +1,16 @@
+// impport bootstrap
+@import "variables";
+@import "~bootstrap/scss/bootstrap";
+// import fonticon
+@import "../public/css/icon-css";
+
+.start-icon::before {margin-right: 5px;}
+.end-icon::before {margin-left: 5px;}
+
+
+.divider-with-line {font-size: 22px;font-weight: 300; position: relative;
+  &::before, &::after {content: ''; position: absolute; width: 45%;top: 15px;border-bottom: 1px solid;}
+  &::before {left: 0;}
+  &::after {right: 0;}
+}
+.form-control.is-invalid {background-image: none;}
