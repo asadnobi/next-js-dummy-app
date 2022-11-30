@@ -11,8 +11,12 @@ const nextConfig = {
       { loader: '@next/font/google', options: { subsets: ['latin'] } },
     ],
   },
+  images: {
+    domains: ['rsquare2014.com'],
+  },
   env: {
-    MYAPI: "https://nodejs-ecommerce-web-api.herokuapp.com/api/v1/"
+    MYAPI: "http://localhost:4000/api/v1/"
+    // MYAPI: "https://nodejs-ecommerce-web-api.herokuapp.com/api/v1/"
   },
 }
 

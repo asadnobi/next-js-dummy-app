@@ -4,9 +4,13 @@ import MainLayout from '../components/layouts/main'
 
 export default function Page() {
   return (
-      <div className='container'>
-        <p>container</p>
-      </div>
+    <>
+      <MainLayout>
+        <div className='wrapper'>
+          about page
+        </div>
+      </MainLayout>
+    </>
   )
 }
 

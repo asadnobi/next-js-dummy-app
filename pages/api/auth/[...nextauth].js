@@ -1,21 +1,29 @@
 import NextAuth from "next-auth"
 import GithubProvider from "next-auth/providers/github"
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials"
-import { login } from '../../../services/http.services';
+import { login, register } from '../../../services/http.services';
+import MyAdapter from '../../../lib/adapter';
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
+import clientPromise from "../../../lib/mongodb"
 
-
-export default async function auth(req, res) {
-  // Configure one or more authentication providers
-  const providers = [
+export default NextAuth({
+  providers: [
     CredentialsProvider({
       name: 'Credentials',
-      async authorize(credentials, req) {
+      authorize: async (credentials) => {
         try {
-          const result = await login({email: credentials.email, password: credentials.password});
-          if(!result) throw new Error("Username or Password doesn't match");
-          return result.data;
+          if(credentials.first_name && credentials.last_name) {
+            const result = await register({ ...credentials });
+            if(result.status) return result.data;
+            return;
+          } else {
+            const result = await login({email: credentials.email, password: credentials.password});
+            if(result.status) return result.data;
+            return;
+          }
         } catch (e) {
-          return null;
+          return;
         }
       }
     }),
@@ -23,38 +31,25 @@ export default async function auth(req, res) {
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET
     }),
-    // ...add more providers here
-  ]
-
-  return await NextAuth(req, res, {
-    providers,
-    secret: process.env.NEXTAUTH_SECRET,
-    session: {
-      strategy: 'jwt',
-      maxAge: 30 * 24 * 60 * 60, // 30 days
-      updateAge: 24 * 60 * 60, // 24 hours
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+    }),
+  ],
+  callbacks: {
+    async redirect({ baseUrl }) {
+      return baseUrl
     },
-    events: {
-      
+    async jwt({ token, user, account }) {
+      return {...token, ...user};
     },
-    callbacks: {
-      async signIn({ user, account, credentials }) {
-        // check user have in database or not
-        if(user.email == 'asadnobi@gmail.com') return true;
-        return false;
-      },
-      async redirect({ url, baseUrl }) {
-        // change address
-        return process.env.NEXTAUTH_URL ? process.env.NEXTAUTH_URL : baseUrl;
-      },
-      async session({ session, user, token }) {
-        // modify session
-        return session
-      },
-      async jwt({ token, user, account }) {
-        // modify token and save in db
-        return token;
-      }
+    async session ({ session, token }) {
+      return { ...session, user:{...token} }
     },
-  })
-}
+  },
+  // pages: {
+  //   error: '/login',
+  // },
+  // adapter: MyAdapter(),
+  adapter: MongoDBAdapter(clientPromise),
+})

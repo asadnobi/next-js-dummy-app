@@ -1,28 +1,17 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import Badge from 'react-bootstrap/Badge';
 import Navbar from 'react-bootstrap/Navbar';
-import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/router'
-import { clearUser } from '../store/reducers/userSlice';
 import { useSession, signOut } from "next-auth/react"
+import Link from 'next/link'
 
 export default function Header () {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const [user, setUser] = useState({isLogged: false});
-  const userSelctor = useSelector((state) => state.user)
-
   const {data: session} = useSession();
   
-  useEffect(() => {
-    if(userSelctor) setUser(userSelctor);
-  })
 
   const logout = async () => {
-    // await dispatch(clearUser());
-    // router.push('/');
-    signOut()
+    signOut();
   } 
   
 
@@ -36,19 +25,19 @@ export default function Header () {
         <Navbar.Collapse id="top-menu">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link" href="#">Why Us?</a>
+              <Link className="nav-link" href="#">Why Us?</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">Services</a>
+              <Link className="nav-link" href="#">Services</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href='about'>About Us</a>
+              <Link className="nav-link" href='/about'>About Us</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">Conatct</a>
+              <Link className="nav-link" href="/contact">Contact</Link>
             </li>
           </ul>
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto flex-row">
             <li className="nav-item">
               <a className="btn rounded-pill" href="#">
                 <i className='icon-search'></i>
@@ -62,11 +51,11 @@ export default function Header () {
             </li>
             <li className="nav-item">
               {session ?
-                <a className="btn btn-primary rounded-pill" onClick={logout}>
+                <a className="btn btn-primary rounded-pill w-100" onClick={logout}>
                   <i className='icon-exit start-icon'></i> Logout
                 </a>
               :
-                <a className="btn btn-primary rounded-pill" href='login'>
+                <a className="btn btn-primary rounded-pill w-100" href='login'>
                   <i className='icon-enter start-icon'></i> Login
                 </a>
               }
