@@ -3,7 +3,6 @@ import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials"
 import { login, register } from '../../../services/http.services';
-import MyAdapter from '../../../lib/adapter';
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter"
 import clientPromise from "../../../lib/mongodb"
 
@@ -50,6 +49,5 @@ export default NextAuth({
   // pages: {
   //   error: '/login',
   // },
-  // adapter: MyAdapter(),
   adapter: MongoDBAdapter(clientPromise),
 })

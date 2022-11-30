@@ -16,7 +16,6 @@ const nextConfig = {
   },
   env: {
     MYAPI: "http://localhost:4000/api/v1/"
-    // MYAPI: "https://nodejs-ecommerce-web-api.herokuapp.com/api/v1/"
   },
 }
 
